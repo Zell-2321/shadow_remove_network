@@ -41,6 +41,10 @@ def main() -> None:
 
     train_model(model, train_loader, criterion, optimizer, num_epochs, device)
 
+
+# -------------------------------------------------------------------------------------------------------------------
+
+   
     # Step2:
     # 将二值化后的Mask以及原图作为新网络的输入，生成去除阴影后的图像
     train_dataset = ShadowRemovalDataset(root_dir="test", transform=transform, masked_img=True)

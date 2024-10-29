@@ -18,6 +18,8 @@ def visualize(input_img, mask_img, output_img, target_img):
     plt.show()
 
 if __name__ == '__main__':
+
+    image_name = "fig3.png"
     
     transform = transforms.Compose([
         transforms.Resize((256, 256)),
@@ -32,7 +34,7 @@ if __name__ == '__main__':
     # # 测试并可视化
     model.eval()
 
-    input_img = Image.open("fig3.png").convert("RGB")
+    input_img = Image.open(image_name).convert("RGB")
     input_img = transform(input_img)
     input_img = input_img.unsqueeze(0).to(device)
 
@@ -43,8 +45,10 @@ if __name__ == '__main__':
     output_img = output_img.squeeze(0)  # 去掉批次维度
     output_img = (output_img > 0.5).float()
 
-    input_img = Image.open("fig3.png").convert("RGB")
+    input_img = Image.open(image_name).convert("RGB")
     input_img = transform(input_img)
+    output_img = Image.open('fig5_2.png').convert("RGB")
+    output_img = transform(output_img)
     combined_img = torch.cat((input_img, output_img), dim=0)
     print(combined_img.shape)
     combined_img = combined_img.unsqueeze(0).to(device)
