@@ -27,7 +27,7 @@ if __name__ == '__main__':
     device = torch.device("cpu")
 
     model = UNet_mask().to(device)  # 这里的 ShadowSegmentationNet 是你的模型类
-    model.load_state_dict(torch.load("model/UNet_mask_epoch_50.pth"))  # 加载模型权重
+    model.load_state_dict(torch.load("model/UNet_mask_epoch_50.pth", map_location=device))  # 加载模型权重
 
     # # 测试并可视化
     model.eval()
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     combined_img = combined_img.unsqueeze(0).to(device)
 
     model = UNet().to(device)  # 这里的 ShadowRemovalNet 是你的模型类
-    model.load_state_dict(torch.load("model/UNet_epoch_50.pth"))  # 加载模型权重
+    model.load_state_dict(torch.load("model/UNet_epoch_50.pth", map_location=device))  # 加载模型权重
 
     # # 测试并可视化
     model.eval()
