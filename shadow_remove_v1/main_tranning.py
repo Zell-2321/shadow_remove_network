@@ -36,7 +36,8 @@ def main() -> None:
 
     # 初始化模型、损失函数和优化器
     model = UNet_mask().to(device)
-    criterion = nn.BCEWithLogitsLoss()
+    # criterion = nn.BCEWithLogitsLoss()
+    criterion = CustomBinaryImageLoss(white_penalty=10.0, black_penalty=1.0, threshold=0.5)
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     train_model(model, train_loader, criterion, optimizer, num_epochs, device)
@@ -45,18 +46,18 @@ def main() -> None:
 # -------------------------------------------------------------------------------------------------------------------
 
    
-    # Step2:
-    # 将二值化后的Mask以及原图作为新网络的输入，生成去除阴影后的图像
-    train_dataset = ShadowRemovalDataset(root_dir="test", transform=transform, masked_img=True)
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    # # Step2:
+    # # 将二值化后的Mask以及原图作为新网络的输入，生成去除阴影后的图像
+    # train_dataset = ShadowRemovalDataset(root_dir="test", transform=transform, masked_img=True)
+    # train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
-    # 初始化模型、损失函数和优化器
-    model = UNet().to(device)
-    criterion = nn.MSELoss()
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    # # 初始化模型、损失函数和优化器
+    # model = UNet().to(device)
+    # criterion = nn.MSELoss()
+    # optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-    train_model(model, train_loader, criterion, optimizer, num_epochs, device)
-    time.sleep(10)
+    # train_model(model, train_loader, criterion, optimizer, num_epochs, device)
+    # time.sleep(10)
 
 
 if __name__ == '__main__':

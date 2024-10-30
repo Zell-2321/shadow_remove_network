@@ -1,6 +1,6 @@
 from network import *
 import os
-from ament_index_python.packages import get_package_share_directory
+# from ament_index_python.packages import get_package_share_directory
 
 
 def visualize(input_img, mask_img, output_img, target_img):
@@ -22,11 +22,16 @@ def visualize(input_img, mask_img, output_img, target_img):
 def main():
 
     package_name = 'shadow_remove_v1'
-    package_path = get_package_share_directory(package_name)
-    image_path = os.path.join(package_path, 'shadow_remove_v1', 'fig3.png')
-    image2_path = os.path.join(package_path, 'shadow_remove_v1', 'fig5_2.png')
-    model_path1 = os.path.join(package_path, 'shadow_remove_v1', 'model', 'UNet_mask_epoch_50.pth')
-    model_path2 = os.path.join(package_path, 'shadow_remove_v1', 'model', 'UNet_epoch_50.pth')
+    # package_path = get_package_share_directory(package_name)
+    # image_path = os.path.join(package_path, 'shadow_remove_v1', 'fig3.png')
+    # image2_path = os.path.join(package_path, 'shadow_remove_v1', 'fig5_2.png')
+
+    # image_path = 'fig2.png'
+    image_path = '91-2.png'
+    image2_path = 'fig5_2.png'
+
+    # model_path1 = os.path.join(package_path, 'shadow_remove_v1', 'model', 'UNet_mask_epoch_50.pth')
+    # model_path2 = os.path.join(package_path, 'shadow_remove_v1', 'model', 'UNet_epoch_50.pth')
 
     
     transform = transforms.Compose([
@@ -37,7 +42,8 @@ def main():
     device = torch.device("cpu")
 
     model = UNet_mask().to(device)  # 这里的 ShadowSegmentationNet 是你的模型类
-    model.load_state_dict(torch.load(model_path1, map_location=device))  # 加载模型权重
+    # model.load_state_dict(torch.load(model_path1, map_location=device))  # 加载模型权重
+    model.load_state_dict(torch.load("model/UNet_mask_epoch_44.pth", map_location=device))
 
     # # 测试并可视化
     model.eval()
@@ -49,20 +55,22 @@ def main():
 
     with torch.no_grad():
         output_img = model(input_img)
+        print(output_img.shape)
 
     output_img = output_img.squeeze(0)  # 去掉批次维度
     output_img = (output_img > 0.5).float()
 
     input_img = Image.open(image_path).convert("RGB")
     input_img = transform(input_img)
-    output_img = Image.open(image2_path).convert("RGB")
-    output_img = transform(output_img)
+    # output_img = Image.open(image2_path).convert("RGB")
+    # output_img = transform(output_img)
     combined_img = torch.cat((input_img, output_img), dim=0)
     print(combined_img.shape)
     combined_img = combined_img.unsqueeze(0).to(device)
 
     model = UNet().to(device)  # 这里的 ShadowRemovalNet 是你的模型类
-    model.load_state_dict(torch.load(model_path2, map_location=device))  # 加载模型权重
+    # model.load_state_dict(torch.load(model_path2, map_location=device))  # 加载模型权重
+    model.load_state_dict(torch.load("model/UNet_epoch_50.pth", map_location=device))
 
     # # 测试并可视化
     model.eval()
